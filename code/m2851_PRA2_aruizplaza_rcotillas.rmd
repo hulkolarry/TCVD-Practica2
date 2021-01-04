@@ -3,11 +3,6 @@ title: "Tipología y Ciclo de Vida de Datos - Práctica 2"
 author: "aruizplaza & rcotillas"
 date: "10/12/2020"
 output:
-  pdf_document: 
-    highlight: zenburn
-    toc: yes
-    latex_engine: xelatex
-    keep_tex: yes
   html_document: 
     number_sections: yes
     theme: cosmo
@@ -16,6 +11,10 @@ output:
     includes:
       in_header: M2.851-PRA-header.html
     df_print: tibble
+  pdf_document: 
+    highlight: zenburn
+    toc: yes
+    latex_engine: xelatex
   word_document: default
 ---
 
@@ -184,7 +183,7 @@ import seaborn as sns
 
 ```{r Carga del dataset de entrenamiento, message=TRUE, warning=TRUE}
 # Carga de los datos de entrenamiento desde el archivo csv a un nuevo dataframe llamado train
-train <- read.csv("./titanic/train.csv",header=T, sep=",")
+train <- read.csv("../titanic/train.csv",header=T, sep=",")
 
 # Visualizamos las 6 primeras filas, y las 6 últimas, del nuevo dataset
 head(train)
@@ -770,9 +769,12 @@ Esta matriz de confusión arroja mejores resultados a los obtenidos mediante el 
 Por otro lado vamos a ver las siguientes gráficas referentes a los contrastes de hipótesis realizados con anterioridad donde se puede observar gráficamente cómo la supervivecia es mucho mayor en el caso de las mujeres y los niños.
 
 ```{r}
-dfTrain_cat$child <- cut(dfTrain$Age, c(0,13,100), labels=c("Child", "Adult"))
-dfTrain_cat$child[dfTrain_cat$child == "1"] <- "Child"
+dfTrain_cat$aux <- as.factor(dfTrain_cat$Age)
+dfTrain_cat$child[dfTrain_cat$aux == 1 | dfTrain_cat$aux == 2] <- "Child"
+dfTrain_cat$child[dfTrain_cat$aux != 1 & dfTrain_cat$aux != 2] <- "Adult"
+dfTrain_cat <- dfTrain_cat[,-10]
 ```
+
 
 ```{python}
 fig, axs = plt.subplots(ncols=1, constrained_layout=True, figsize=(5,4))
@@ -816,3 +818,14 @@ Contribuciones                |   Firma
 Investigación previa          |   aruizplaza, rcotillas
 Redacción de las respuestas   |   aruizplaza, rcotillas
 Desarrollo código             |   aruizplaza, rcotillas
+
+
+# .- Generación archivos csv para entrega
+
+```{r}
+write.csv(dfTrain_cat, "dfTrain_cat.csv")
+
+write.csv(dfTrain_fact, "dfTrain_fact.csv")
+
+```
+
